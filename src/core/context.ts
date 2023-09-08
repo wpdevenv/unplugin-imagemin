@@ -393,9 +393,9 @@ export default class Context {
       const htmlBuffer = Buffer.from(html);
       const htmlCodeString = htmlBuffer.toString();
       const file = {
-        code: htmlCodeString
+        code: htmlCodeString,
       };
-     
+
       transformCode(this.config.options, [file], this.files, 'code');
       await fs.writeFile(htmlBundlePath, file.code);
     });
@@ -517,6 +517,7 @@ async function convertToSharp(inputImg, options) {
       ...options.compress[currentType.to],
     };
     res = await sharp(inputImg)
+      .withMetadata()
       [sharpEncodeMap.get(currentType.to)!](merge)
       .toBuffer();
   } else {
@@ -524,7 +525,10 @@ async function convertToSharp(inputImg, options) {
       ...sharpOptions[ext],
       ...options.compress[ext],
     };
-    res = await sharp(inputImg)[sharpEncodeMap.get(ext)!](merge).toBuffer();
+    res = await sharp(inputImg)
+      .withMetadata()
+      [sharpEncodeMap.get(ext)!](merge)
+      .toBuffer();
   }
   return res;
 }

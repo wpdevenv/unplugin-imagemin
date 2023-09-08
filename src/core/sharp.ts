@@ -7,6 +7,7 @@ import { compressSuccess, logger } from './log';
 import chalk from 'chalk';
 import { extname } from 'pathe';
 import { sharpOptions } from './compressOptions';
+import { log } from 'node:console';
 async function initSharp(config) {
   const { files, outputPath, cache, chunks, options, isTurn } = config;
   const images = files.map(async (filePath: string) => {
@@ -44,11 +45,13 @@ async function initSharp(config) {
         ...options.compress[currentType.to],
       };
       resultBuffer = await sharp(fileRootPath)
+        .rotate()
         [sharpEncodeMap.get(currentType.to)!](merge)
         .toBuffer();
     } else {
       const merge = { ...sharpOptions[ext], ...options.compress[ext] };
       resultBuffer = await sharp(fileRootPath)
+        .rotate()
         [sharpEncodeMap.get(fileExt)!](merge)
         .toBuffer();
     }
